@@ -26,7 +26,7 @@ module.exports = class GroupMember extends Sequelize.Model {
         );
     }
     static associate(db) {
-        db.GroupMember.belogsTo(db.Group, { foreignKey: "groupId", targetKey: "id" });
-        db.GroupMember.belogsTo(db.Member, { foreignKey: "memberId", targetKey: "id" });
+        db.GroupMember.belongsTo(db.Group, { foreignKey: "groupId", targetKey: "id" });
+        db.GroupMember.belongsTo(db.Member, { foreignKey: "memberId", targetKey: "id" });
     }
 };

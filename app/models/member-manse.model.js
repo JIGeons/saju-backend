@@ -6,7 +6,8 @@ module.exports = class MemberManse extends Sequelize.Model {
             {
                 id: {
                     type: Sequelize.INTEGER,
-                    allowNull: false,
+                    autoIncrement: true,
+                    primaryKey: true,
                 },
                 memberId: {
                     type: Sequelize.INTEGER,

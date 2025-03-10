@@ -26,7 +26,7 @@ module.exports = class Group extends Sequelize.Model {
         );
     }
     static associate(db) {
-        db.Group.belogsTo(db.User, { foreignKey: "userId", targetKey: "id" });
+        db.Group.belongsTo(db.User, { foreignKey: "userId", targetKey: "id" });
         db.Group.hasMany(db.GroupMember, { foreignKey: 'groupId', sourceKey: "id", onDelete: "CASCADE" });
     }
 };
