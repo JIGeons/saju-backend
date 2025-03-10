@@ -3,7 +3,7 @@
  */
 const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'dev';
-const config = require(__dirname + '/../configs/sequelize.config.js')[env];
+const config = require(__dirname + '/../configs/sequelize.config.js')[env]; // sequelize.config.js 파일에서 환경별 DB 설정을 불러온다.
 
 const db = {};
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
