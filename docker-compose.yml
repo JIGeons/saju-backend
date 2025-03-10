@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  mysql:
+    container_name: saju_nodejs_mysql
+    image: mysql:5.7.27
+    platform: linux/amd64 # ARM 서버에서도 실행할 수 있도록 AMD64로 강제 설정
+    restart: always
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=1234
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_DATABASE=saju_db_dev
+      - TZ=Asia/Seoul
+    ports:
+      - "3309:3306"
+    volumes:
+      - ./mysql/mysql_data:/var/lib/mysql
+    command: ["mysqld", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+

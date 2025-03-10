@@ -6,6 +6,22 @@ dotenv.config();
 const router = require('./app/routes/route');
 
 /**
+ * Sequelize 설정
+ */
+const { sequelize } = require('./app/models');
+sequelize
+    .sync({ force: true })
+    .then(async () => {
+        process.env.NODE_ENV !== "test" ? console.log("Mysql 연결 성공") : null;
+    })
+    .catch(async (err) => {
+        if (process.env.NODE_ENV === "prod") {
+            throw new Error("Mysql 연결 에러!");
+        } else {
+            throw new Error("Mysql 연결 에러!");
+        }
+    });
+/**
  * Express 설정
  */
 const app = express();
