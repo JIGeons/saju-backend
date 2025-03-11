@@ -4,6 +4,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 dotenv.config();
 const router = require('./app/routes/route');
+const userRouter = require('./app/routes/user.route');
 
 /**
  * Sequelize 설정
@@ -18,7 +19,7 @@ sequelize
         if (process.env.NODE_ENV === "prod") {
             throw new Error("Mysql 연결 에러!");
         } else {
-            throw new Error("Mysql 연결 에러!");
+            throw new Error(`Mysql 연결 에러! ${err.message}`);
         }
     });
 /**
@@ -41,6 +42,7 @@ if (process.env.NODE_ENV === "prod") {
  * Route 설정
  */
 app.use("/", router);
+app.use("/api/auths", userRouter);
 
 /**
  * 에러 처리 설정
