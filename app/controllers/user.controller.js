@@ -70,7 +70,6 @@ exports.signup = async (req, res, next) => {
             data: {accessToken: accessToken},
         });
     } catch (err) {
-        console.log("error message: " + err.message);
         next(`${req.method} ${req.url} : ` + err);
     }
 };
@@ -79,6 +78,16 @@ exports.signup = async (req, res, next) => {
  * 로그인
  */
 exports.signin = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const result = errors.array();
+        return res.status(400).send({
+            statusCode: 400,
+            message: "잘못된 요청값 입니다.",
+            error: result,
+        });
+    }
+
     const email = req.body.email;
     const password = req.body.password;
 

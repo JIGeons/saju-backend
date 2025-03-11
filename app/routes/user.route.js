@@ -34,7 +34,13 @@ router.post("/signup",
 );
 
 // 로그인
-router.post("/signin", userController.signin);
+router.post(
+    "/signin",
+    [
+        body("email").not().isEmpty().isEmail(),
+        body("password").not().isEmpty().isLength({ min: 4, max: 100 })
+    ],
+    userController.signin);
 
 // 내 정보 가져오기
 // router.get("/me", [authJwt.verifyToken(JWT_SECRET)], userController.me);
