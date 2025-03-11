@@ -1,6 +1,6 @@
 const { Manse, MemberManse } = require('../models');
 const sajuDataService = require("./saju-data");
-const monent = require("moment");
+const moment = require("moment");
 const { Op } = require("sequelize");
 
 /**
@@ -8,7 +8,7 @@ const { Op } = require("sequelize");
  */
 exports.convertBirthtimeToSaju = async (member) => {
     //(1) 생년월일을 삼주(양력)로 변환
-    const samju = await this.convertBirthtimeToSaju(member.birthdayType, member.birthday, member.time);
+    const samju = await this.convertBirthToSaju(member.birthdayType, member.birthday, member.time);
 
     //(2) 생년월일시(양력) 생성
     let solarDatetime = samju.solarDate;
@@ -35,8 +35,8 @@ exports.convertBirthtimeToSaju = async (member) => {
         monthGround: samju.monthGround,
         daySky: samju.daySky,
         dayGround: samju.dayGround,
-        timeSky: samju.timeSky,
-        timeGround: samju.timeGround,
+        timeSky: timeJu.timeSky,
+        timeGround: timeJu.timeGround,
         bigFortuneNumber: bigFortune.bigFortuneNumber,
         bigFortuneStartYear: bigFortune.bigFortuneStart,
         sessionStartTime: samju.sessionStartTime,
@@ -47,7 +47,7 @@ exports.convertBirthtimeToSaju = async (member) => {
  * 생년월일을 삼주로 변환
  * 절입일 예외처리 : 시간 미입력시 12:00
  */
-exports.convertBirthToSamju = async (birthdayType, birthday, time) => {
+exports.convertBirthToSaju = async (birthdayType, birthday, time) => {
     // 23:30 ~ 23:59 자시에 태어난 경우 다음날로 처리
     // 1987.02.13 00:30분  (계사일주 - 임자시)
     // 1987.02.13 23:40분  (갑오일주 - 갑자시)
@@ -98,7 +98,7 @@ exports.convertBirthToSamju = async (birthdayType, birthday, time) => {
  * 순행(true), 역행(false) 판단 (성별, 인간)
  */
 exports.isRightDirection = async (gender, yearSky) => {
-    const minusPlus = await sajuDateService.getMinusPlus()[yearSky];
+    const minusPlus = await sajuDataService.getMinusPlus()[yearSky];
     // 남양여음 순행, 남음여양 역행
     if ((gender === "MALE" && minusPlus === "양") || (gender === "FEMALE" && minusPlus === "음")) {
         return true;

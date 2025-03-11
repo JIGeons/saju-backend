@@ -1,7 +1,8 @@
 const { User, Member, MemberManse } = require('../models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcryptjs");
-const {validationResult} = require("express-validator");
+const sajuService = require("../commons/birth-to-saju");
+const { validationResult } = require("express-validator");
 
 /**
  * 회원가입
@@ -54,6 +55,11 @@ exports.signup = async (req, res, next) => {
             time,
         });
 
+        console.log("member: ", member);
+
+        // 생년월일시를 사주로 변환
+        await sajuService.convertBirthtimeToSaju(member);
+
         const accessToken = jwt.sign(
             {
                 id: user.id,
@@ -70,6 +76,7 @@ exports.signup = async (req, res, next) => {
             data: {accessToken: accessToken},
         });
     } catch (err) {
+        console.log("error message: ", err);
         next(`${req.method} ${req.url} : ` + err);
     }
 };

@@ -23,7 +23,7 @@ module.exports = class MemberManse extends Sequelize.Model {
                 },
                 seasonStartTime: {
                     type: Sequelize.STRING(20),
-                    allowNull: false,
+                    allowNull: true,
                 },
                 yearSky: {
                     type: Sequelize.STRING(10),
