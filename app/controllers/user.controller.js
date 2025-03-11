@@ -132,3 +132,36 @@ exports.signin = async (req, res, next) => {
         next(`${req.method} ${req.url} : ` + err);
     }
 };
+
+/**
+ * 내 정보 보기
+ */
+exports.me = async (req, res, next) => {
+    const userId = req.userId;
+
+    try {
+        const user = await User.findOne({
+            attributes: ["id"],
+            where: {
+                id: userId,
+            },
+            include: [
+                {
+                    model: Member,
+                    where: {
+                        type: "USER",
+                    },
+                    include: [{ model: MemberManse }],
+                },
+            ],
+        });
+
+        return res.status(200).send({
+            statusCode: 200,
+            message: "내정보보기 성공",
+            data: user,
+        });
+    } catch (err) {
+        next(`${req.method} ${req.url} : ` + err);
+    }
+}

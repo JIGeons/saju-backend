@@ -43,6 +43,6 @@ router.post(
     userController.signin);
 
 // 내 정보 가져오기
-// router.get("/me", [authJwt.verifyToken(JWT_SECRET)], userController.me);
+router.get("/me", [authJwt.verifyToken(JWT_SECRET)], userController.me);
 
 module.exports = router;
