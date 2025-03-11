@@ -5,8 +5,11 @@ const { Op } = require("sequelize");
 
 /**
  * 생년월일시를 사주로 변환
+ * @param member         - member
+ * @param transaction    - 트랜잭션
+ * @returns {Promise<void>}
  */
-exports.convertBirthtimeToSaju = async (member) => {
+exports.convertBirthtimeToSaju = async (member, transaction) => {
     //(1) 생년월일을 삼주(양력)로 변환
     const samju = await this.convertBirthToSaju(member.birthdayType, member.birthday, member.time);
 
@@ -26,7 +29,7 @@ exports.convertBirthtimeToSaju = async (member) => {
     //(6) 사주 가져오기
     const timeJu = await this.getTimePillar(samju.daySky, member.time);
 
-    //(7) 멤버-만세력 테이블에 대운수 및 시주 저장 & 수정
+    //(7) 멤버-만세력 테이블에 대운수 및 시주 저장 & 수정 (트랜잭션에 저장&수정)
     await MemberManse.upsert({
         memberId: member.id,    // key 값
         yearSky: samju.yearSky,
@@ -40,6 +43,8 @@ exports.convertBirthtimeToSaju = async (member) => {
         bigFortuneNumber: bigFortune.bigFortuneNumber,
         bigFortuneStartYear: bigFortune.bigFortuneStart,
         sessionStartTime: samju.sessionStartTime,
+    }, {
+        transaction: transaction,
     });
 };
 

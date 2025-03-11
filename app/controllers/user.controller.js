@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require("bcryptjs");
 const sajuService = require("../commons/birth-to-saju");
 const { validationResult } = require("express-validator");
+const { sequelize } = require('../models');
 
 /**
  * 회원가입
@@ -26,11 +27,13 @@ exports.signup = async (req, res, next) => {
     const birthday = String(req.body.birthday).replace(/(\d{4})(\d{2})(\d{2})/g, "$1-$2-$3");
     const time = req.body.time ? String(req.body.time).replace(/(\d{2})(\d{2})/g, "$1:$2") : null;
 
+    // 트랜잭션 생성
+    const t = await sequelize.transaction();
+
     try {
         const existUserEmail = await User.findOne({
-            where: {
-                email,
-            },
+            where: { email },
+            transaction: t
         });
 
         if (existUserEmail) {
@@ -40,11 +43,15 @@ exports.signup = async (req, res, next) => {
             });
         }
 
+        // 트랜잭션에서 user 생성
         const user = await User.create({
             email,
             password,
+        }, {
+            transaction: t
         });
 
+        // 트랜잭션에서 member 생성
         const member = await Member.create({
             userId: user.id,
             type: "USER",
@@ -53,12 +60,12 @@ exports.signup = async (req, res, next) => {
             birthday,
             birthdayType,
             time,
+        }, {
+            transaction: t
         });
 
-        console.log("member: ", member);
-
         // 생년월일시를 사주로 변환
-        await sajuService.convertBirthtimeToSaju(member);
+        await sajuService.convertBirthtimeToSaju(member, t);
 
         const accessToken = jwt.sign(
             {
@@ -70,6 +77,10 @@ exports.signup = async (req, res, next) => {
             }
         );
 
+        // 성공 시 트랜잭션 커밋
+        console.log("트랜잭션 커밋 시작");
+        await t.commit();
+        console.log("트랜잭션 커밋 성공");
         return res.status(201).send({
             statusCode: 201,
             message: "회원가입 성공",
@@ -77,6 +88,8 @@ exports.signup = async (req, res, next) => {
         });
     } catch (err) {
         console.log("error message: ", err);
+        // 실패 시 트랜잭션 롤백
+        await t.rollback();
         next(`${req.method} ${req.url} : ` + err);
     }
 };
