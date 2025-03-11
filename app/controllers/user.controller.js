@@ -74,3 +74,52 @@ exports.signup = async (req, res, next) => {
         next(`${req.method} ${req.url} : ` + err);
     }
 };
+
+/**
+ * 로그인
+ */
+exports.signin = async (req, res, next) => {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    try {
+        const user = await User.findOne({
+            where: {
+                email,
+            },
+        });
+
+        if (!user) {
+            return res.status(401).send({
+                statusCode: 401,
+                message: "로그인 실패",
+            });
+        }
+
+        const passwordIsValid = bcrypt.compareSync(password, user.password);
+        if (!passwordIsValid) {
+            return res.status(401).send({
+                statisCode: 401,
+                message: "로그인 실패"
+            });
+        }
+
+        const accessToken = jwt.sign(
+            {
+                id: user.id,
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: '1d',
+            }
+        );
+
+        return res.status(200).send({
+            statusCode: 200,
+            message: "로그인 성공",
+            data: { accessToken: accessToken },
+        });
+    } catch (err) {
+        next(`${req.method} ${req.url} : ` + err);
+    }
+};
