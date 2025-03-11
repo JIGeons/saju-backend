@@ -11,7 +11,7 @@ const userRouter = require('./app/routes/user.route');
  */
 const { sequelize } = require('./app/models');
 sequelize
-    .sync({ force: true })
+    .sync({ force: false })
     .then(async () => {
         process.env.NODE_ENV !== "test" ? console.log("Mysql 연결 성공") : null;
     })
@@ -22,6 +22,7 @@ sequelize
             throw new Error(`Mysql 연결 에러! ${err.message}`);
         }
     });
+
 /**
  * Express 설정
  */
@@ -42,7 +43,7 @@ if (process.env.NODE_ENV === "prod") {
  * Route 설정
  */
 app.use("/", router);
-app.use("/api/auths", userRouter);
+app.use("/api/auth", userRouter);
 
 /**
  * 에러 처리 설정
