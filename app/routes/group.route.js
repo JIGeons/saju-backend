@@ -6,6 +6,7 @@ const { body, query, param } = require("express-validator");
 
 // Controller
 const groupController = require("../controllers/group.controller");
+const groupMemberController = require("../controllers/group-member.controller");
 
 /**
  * [그룹]
@@ -55,5 +56,18 @@ router.delete(
 
 // 그룹명 리스트
 router.get("/names", [authJwt.verifyToken(JWT_SECRET)], groupController.getGroupNames);
+
+/**
+ * [그룹 멤버]
+ */
+
+// 그룹에 멤버 추가
+router.post("/:groupId/members/:memberId", [authJwt.verifyToken(JWT_SECRET)], groupMemberController.addMemberToGroup);
+
+// 그룹별 멤버 리스트
+router.get("/:groupId/members", [authJwt.verifyToken(JWT_SECRET)], groupMemberController.getGroupMemberList);
+
+// 그룹별 멤버 제거
+router.delete("/:groupId/members/:memberId", [authJwt.verifyToken(JWT_SECRET)], groupMemberController.removeMemberFromGroup);
 
 module.exports = router;
