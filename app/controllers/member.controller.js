@@ -1,10 +1,21 @@
 const { Member, MemberManse, Sequelize, sequelize } = require("../models");
 const SajuService = require("../commons/birth-to-saju");
+const {validationResult} = require("express-validator");
 
 /**
  * 멤버 추가
  */
 exports.addMember = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const result = errors.array();
+    return res.status(400).send({
+      statusCode: 400,
+      message: "잘못된 요청값 입니다.",
+      error: result,
+    });
+  }
+
   const nickname = req.body.nickname;
   const gender = req.body.gender;
   const birthdayType = req.body.birthdayType;
@@ -62,6 +73,16 @@ const getPagingData = async (data, page, limit) => {
  * 멤버 리스트
  */
 exports.getMembers = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const result = errors.array();
+    return res.status(400).send({
+      statusCode: 400,
+      message: "잘못된 요청값 입니다.",
+      error: result,
+    });
+  }
+
   const page = req.query.page !== "NaN" ? req.query.page : 0;
   const size = req.query.size;
   const { limit, offset } = getPagination(page, size);
@@ -105,6 +126,16 @@ exports.getMembers = async (req, res, next) => {
  * 멤버 삭제
  */
 exports.deleteMember = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const result = errors.array();
+    return res.status(400).send({
+      statusCode: 400,
+      message: "잘못된 요청값 입니다.",
+      error: result,
+    });
+  }
+  
   const userId = req.userId;
   const memberId = req.params.id;
 
