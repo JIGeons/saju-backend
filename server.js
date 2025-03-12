@@ -8,6 +8,7 @@ dotenv.config();
 const router = require('./app/routes/route');
 const userRouter = require('./app/routes/user.route');
 const memberRouter = require('./app/routes/member.route');
+const groupRouter = require('./app/routes/group.route');
 
 /**
  * Sequelize 설정
@@ -48,6 +49,7 @@ if (process.env.NODE_ENV === "prod") {
 app.use("/", router);
 app.use("/api/auth", userRouter);
 app.use("/api/members", memberRouter);
+app.use("/api/groups", groupRouter);
 
 /**
  * 에러 처리 설정
