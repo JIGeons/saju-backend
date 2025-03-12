@@ -3,11 +3,22 @@ const req = require("express/lib/request");
 
 // utils
 const { getPagination } = require("../commons/utils");
+const {validationResult} = require("express-validator");
 
 /**
  * 그룹에 멤버 추가
  */
 exports.addMemberToGroup = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const result = errors.array();
+    return res.status(400).send({
+      statusCode: 400,
+      message: "잘못된 요청값 입니다.",
+      error: result,
+    });
+  }
+
   const groupId = req.params.groupId;
   const memberId = req.params.memberId;
   const userId = req.userId;
@@ -90,6 +101,16 @@ exports.addMemberToGroup = async (req, res, next) => {
  * 그룹별 멤버 리스트
  */
 exports.getGroupMemberList = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const result = errors.array();
+    return res.status(400).send({
+      statusCode: 400,
+      message: "잘못된 요청값 입니다.",
+      error: result,
+    });
+  }
+
   const page = req.query.page !== "NaN" ? req.query.page : 0;
   const size = req.query.size;
   const { limit, offset } = getPagination(page, size);
@@ -170,6 +191,16 @@ exports.getGroupMemberList = async (req, res, next) => {
  * 그룹에서 멤버 제거
  */
 exports.removeMemberFromGroup = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const result = errors.array();
+    return res.status(400).send({
+      statusCode: 400,
+      message: "잘못된 요청값 입니다.",
+      error: result,
+    });
+  }
+  
   const userId = req.userId;
   const groupId = req.params.groupId;
   const memberId = req.params.memberId;

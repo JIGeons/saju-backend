@@ -62,12 +62,37 @@ router.get("/names", [authJwt.verifyToken(JWT_SECRET)], groupController.getGroup
  */
 
 // 그룹에 멤버 추가
-router.post("/:groupId/members/:memberId", [authJwt.verifyToken(JWT_SECRET)], groupMemberController.addMemberToGroup);
+router.post(
+  "/:groupId/members/:memberId",
+  [
+    authJwt.verifyToken(JWT_SECRET),
+    param("groupId").not().isEmpty().isInt(),
+    param("memberId").not().isEmpty().isInt(),
+  ],
+  groupMemberController.addMemberToGroup
+);
 
 // 그룹별 멤버 리스트
-router.get("/:groupId/members", [authJwt.verifyToken(JWT_SECRET)], groupMemberController.getGroupMemberList);
+router.get(
+  "/:groupId/members",
+  [
+    authJwt.verifyToken(JWT_SECRET),
+    param("groupId").not().isEmpty().isInt(),
+    query("page").not().isEmpty().isInt(),
+    query("size").not().isEmpty().isInt(),
+  ],
+  groupMemberController.getGroupMemberList
+);
 
 // 그룹별 멤버 제거
-router.delete("/:groupId/members/:memberId", [authJwt.verifyToken(JWT_SECRET)], groupMemberController.removeMemberFromGroup);
+router.delete(
+  "/:groupId/members/:memberId",
+  [
+    authJwt.verifyToken(JWT_SECRET),
+    param("groupId").not().isEmpty().isInt(),
+    param("memberId").not().isEmpty().isInt(),
+  ],
+  groupMemberController.removeMemberFromGroup
+);
 
 module.exports = router;
