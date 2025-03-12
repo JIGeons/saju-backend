@@ -2,6 +2,9 @@ const { Member, MemberManse, Sequelize, sequelize } = require("../models");
 const SajuService = require("../commons/birth-to-saju");
 const {validationResult} = require("express-validator");
 
+// utils
+const { getPagination } = require("../commons/utils");
+
 /**
  * 멤버 추가
  */
@@ -52,21 +55,6 @@ exports.addMember = async (req, res, next) => {
     await t.rollback();
     next(`${req.method} ${req.url} : ` + error);
   }
-};
-
-const getPagination = (page, size) => {
-  const limit = size ? +size : 0;
-  const offset = page ? page * limit : 0;
-
-  return { limit, offset };
-}
-
-const getPagingData = async (data, page, limit) => {
-  const { count: totalItems, rows: memberList } = data;
-  const currentPage = page ? +page : 0;
-  const totalPages = Math.ceil(totalItems / limit);
-
-  return { totalItems, totalPages, currentPage, memberList };
 };
 
 /**
@@ -135,7 +123,7 @@ exports.deleteMember = async (req, res, next) => {
       error: result,
     });
   }
-  
+
   const userId = req.userId;
   const memberId = req.params.id;
 
@@ -190,3 +178,11 @@ exports.deleteMember = async (req, res, next) => {
     next(`${req.method} ${req.url} : ` + error);
   }
 }
+
+const getPagingData = async (data, page, limit) => {
+  const { count: totalItems, rows: memberList } = data;
+  const currentPage = page ? +page : 0;
+  const totalPages = Math.ceil(totalItems / limit);
+
+  return { totalItems, totalPages, currentPage, memberList };
+};
