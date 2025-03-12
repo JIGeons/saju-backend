@@ -37,6 +37,7 @@ exports.signup = async (req, res, next) => {
         });
 
         if (existUserEmail) {
+            await t.rollback();     // 트랜잭션 종료
             return res.status(409).send({
                 statusCode: 409,
                 message: "이미 사용중인 이메일 입니다.",

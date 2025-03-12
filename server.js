@@ -3,8 +3,11 @@ const morgan = require('morgan');
 const cors = require('cors');
 const dotenv = require('dotenv');
 dotenv.config();
+
+// 라우터
 const router = require('./app/routes/route');
 const userRouter = require('./app/routes/user.route');
+const memberRouter = require('./app/routes/member.route');
 
 /**
  * Sequelize 설정
@@ -17,9 +20,9 @@ sequelize
     })
     .catch(async (err) => {
         if (process.env.NODE_ENV === "prod") {
-            throw new Error("Mysql 연결 에러!");
+            console.error(`❌ MySQL 연결 에러`);
         } else {
-            throw new Error(`Mysql 연결 에러! ${err.message}`);
+            console.error(`❌ MySQL 연결 에러: ${err.message}`);
         }
     });
 
@@ -44,6 +47,7 @@ if (process.env.NODE_ENV === "prod") {
  */
 app.use("/", router);
 app.use("/api/auth", userRouter);
+app.use("/api/members", memberRouter);
 
 /**
  * 에러 처리 설정
