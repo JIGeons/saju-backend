@@ -11,6 +11,10 @@ const memberRouter = require('./app/routes/member.route');
 const groupRouter = require('./app/routes/group.route');
 const manseRouter = require('./app/routes/manse.route');
 
+// slack
+const moment = require('moment');
+const slack = require("./app/commons/slack.js");
+
 /**
  * Sequelize 설정
  */
@@ -65,12 +69,25 @@ app.use((req, res, next) => {
 
 // 500 서버 에러 처리
 app.use((err, req, res, next) => {
+    let requestIp = null;
+    if (req.headers["x-forwarded-for"]) {
+        requestIp = req.headers["x-forwarded-for"]; // client IP
+    } else {
+        requestIp = req.connection.remoteAddress;   //로드밸런서 IP
+    }
+
     if (process.env.NODE_ENV === "prod" && err.status !== 404) {
+        const body = JSON.stringify(req.body);
+        slack.slackMessage("#ff0000", "서버 에러!", `${requestIp}, ${err}:${body}`, moment().unix());
+
         return res.status(500).send({
             statusCode: 500,
             message: "서버 에러!",
         });
     } else {
+        const body = JSON.stringify(req.body);
+        slack.slackMessage("#ff0000", "서버 에러!", `${requestIp}, ${err}:${body}`, moment().unix());
+
         return res.status(500).send({
             statusCode: 500,
             message: "서버 에러!",
