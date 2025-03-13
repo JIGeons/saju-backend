@@ -1,4 +1,6 @@
 const authJwt = require("../middleware/verify-jwt-token.middleware");
+// const apiLimiter = process.env.NODE_ENV === "prod" ? require("../middleware/api-limit.middleware").limit : [];
+const apiLimiter = require("../middleware/api-limit.middleware").limit;
 const JWT_SECRET = process.env.JWT_SECRET;
 const express = require("express");
 const router = express.Router();
@@ -43,6 +45,6 @@ router.post(
     userController.signin);
 
 // 내 정보 가져오기
-router.get("/me", [authJwt.verifyToken(JWT_SECRET)], userController.me);
+router.get("/me", [apiLimiter, authJwt.verifyToken(JWT_SECRET)], userController.me);
 
 module.exports = router;
