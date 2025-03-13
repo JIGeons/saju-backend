@@ -9,6 +9,7 @@ const router = require('./app/routes/route');
 const userRouter = require('./app/routes/user.route');
 const memberRouter = require('./app/routes/member.route');
 const groupRouter = require('./app/routes/group.route');
+const manseRouter = require('./app/routes/manse.route');
 
 /**
  * Sequelize 설정
@@ -50,6 +51,7 @@ app.use("/", router);
 app.use("/api/auth", userRouter);
 app.use("/api/members", memberRouter);
 app.use("/api/groups", groupRouter);
+app.use("/api/manse", manseRouter);
 
 /**
  * 에러 처리 설정

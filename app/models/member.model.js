@@ -47,6 +47,6 @@ module.exports = class Member extends Sequelize.Model {
     static associate(db) {
         db.Member.belongsTo(db.User, { foreignKey: 'userId', targetKey: "id" });
         db.Member.hasMany(db.GroupMember, { foreignKey: "memberId", sourceKey: "id", onDelete: "CASCADE" });
-        db.Member.hasMany(db.MemberManse, { foreignKey: "memberId", sourceKey: "id", onDelete: "CASCADE" });
+        db.Member.hasOne(db.MemberManse, { foreignKey: "memberId", sourceKey: "id", onDelete: "CASCADE" });
     }
 };

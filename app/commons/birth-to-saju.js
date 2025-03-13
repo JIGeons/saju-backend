@@ -22,6 +22,7 @@ exports.convertBirthtimeToSaju = async (member, transaction) => {
 
     //(4) 절입시간 가져오기
     const seasonTime = await this.getSeasonStartTime(direction, solarDatetime);
+    console.log("### seasonTime: ", seasonTime.format("YYYY-MM-DD HH:mm:ss"));
 
     //(5) 대운수 및 대운 시작년 가져오기
     const bigFortune = await this.getBigFortuneNumber(direction, seasonTime, moment(solarDatetime));
@@ -42,7 +43,7 @@ exports.convertBirthtimeToSaju = async (member, transaction) => {
         timeGround: timeJu.timeGround,
         bigFortuneNumber: bigFortune.bigFortuneNumber,
         bigFortuneStartYear: bigFortune.bigFortuneStart,
-        sessionStartTime: samju.sessionStartTime,
+        seasonStartTime: seasonTime.format("YYYY-MM-DD HH:mm:ss"),
     }, {
         transaction: transaction,
     });
